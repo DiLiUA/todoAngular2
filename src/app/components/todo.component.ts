@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 import { TodoService } from '../services/todo.service';
 import { Todo } from './todo';
 
 @Component({
-  selector: 'app-todo',
+  selector: 'sg-todo',
   templateUrl: './todo.component.html'
 })
 export class TodoComponent implements OnInit {
@@ -21,39 +22,46 @@ export class TodoComponent implements OnInit {
     this.newTodoText = '';
   }
 
-  filtering(filter) {
-    if (filter === 'All') {
-      this.todos = this.todoService.getTodos();
-    } else if (filter === 'Active') {
-      this.todos = this.getItemsFlag(false);
+  filtering(filter: string): void {
+    if (filter === 'Active') {
+      this.todos = this.getItemsLeft();
     } else if (filter === 'Completed') {
-      this.todos = this.getItemsFlag(true);
+      this.todos = this.getItemsDone();
+    } else {
+      this.todos = this.todoService.getTodos();
     }
   }
 
-  addTodo() {
-    if (this.newTodoText.trim().length) {
-      this.todoService.add(this.newTodoText);
-      this.newTodoText = '';
+  addTodo(form: FormGroup, event): void {
+    event.preventDefault();
+    const text = form.value.todo;
+
+    if (text.trim().length) {
+      this.todoService.add(text);
       this.filtering(this.filter);
+      form.reset();
     }
   }
 
-  toggleDone(todo: Todo) {
+  toggleDone(todo: Todo): void {
     this.todoService.toggleDone(todo);
     this.filtering(this.filter);
   }
 
-  removeTodo(todo: Todo) {
+  removeTodo(todo: Todo): void {
     this.todoService.remove(todo);
     this.filtering(this.filter);
   }
 
-  getItemsFlag(flag: boolean) {
-    return this.todoService.filtering(flag);
+  getItemsLeft(): Todo[] {
+    return this.todoService.getItemsLeft();
   }
 
-  changeFilter(filter: string) {
+  getItemsDone(): Todo[] {
+    return this.todoService.getItemsDone();
+  }
+
+  changeFilter(filter: string): void {
     this.filter = filter;
     this.filtering(filter);
   }

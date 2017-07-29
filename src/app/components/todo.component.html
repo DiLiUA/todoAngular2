@@ -1,7 +1,9 @@
 <section class="todoapp">
   <header class="header">
     <h1>todos</h1>
-    <input type="text" class="new-todo" placeholder="todo text" [(ngModel)]="newTodoText" (keyup.enter)="addTodo(newTodoText.value)">
+    <form (ngSubmit)="addTodo(todoForm, $event)" #todoForm="ngForm">
+      <input name="todo" type="text" class="new-todo" placeholder="todo text" ngModel>
+    </form>
   </header>
 
   <section class="main">
@@ -19,18 +21,18 @@
 
   <footer class="footer" *ngIf="filter !== 'All' || todos?.length">
     <span class="todo-count">
-      <strong>{{getItemsFlag(false).length}}</strong>
-      {{getItemsFlag(false).length === 1 ? 'item' : 'items'}} left
+      <strong>{{getItemsLeft().length}}</strong>
+      {{getItemsLeft().length === 1 ? 'item' : 'items'}} left
     </span>
     <ul class="filters">
       <li>
-        <a href="#" (click)="changeFilter('All')" class="{{filter === 'All' ? 'selected' : ''}}">All</a>
+        <a href="#" (click)="changeFilter('All')" [class.selected]="filter === 'All'">All</a>
       </li>
       <li>
-        <a href="#" (click)="changeFilter('Active')" class="{{filter === 'Active' ? 'selected' : ''}}">Active</a>
+        <a href="#" (click)="changeFilter('Active')" [class.selected]="filter === 'Active'">Active</a>
       </li>
       <li>
-        <a href="#" (click)="changeFilter('Completed')" class="{{filter === 'Completed' ? 'selected' : ''}}">Completed</a>
+        <a href="#" (click)="changeFilter('Completed')" [class.selected]="filter === 'Completed'">Completed</a>
       </li>
     </ul>
   </footer>

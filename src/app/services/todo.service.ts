@@ -10,30 +10,34 @@ export class TodoService {
     this.todos = JSON.parse(localStorage.getItem('todos') || '[]');
   }
 
-  getTodos() {
+  getTodos(): Todo[] {
     return this.todos;
   }
 
-  updateStorage() {
+  updateStorage(): void {
     localStorage.setItem('todos', JSON.stringify(this.todos));
   }
 
-  add(text: string) {
-    this.todos.push(new Todo(text));
+  add(text: string): void {
+    this.todos.push(new Todo({text}));
     this.updateStorage();
   }
 
-  toggleDone(todo: Todo) {
-    this.todos[this.todos.indexOf(todo)].completed = !this.todos[this.todos.indexOf(todo)].completed
+  toggleDone(todo: Todo): void {
+    todo.completed = !todo.completed;
     this.updateStorage();
   }
 
-  remove(todo: Todo) {
-    this.todos.splice(this.todos.indexOf(todo), 1);
+  remove(removedTodo: Todo): void {
+    this.todos = this.todos.filter((todo: Todo) => todo !== removedTodo);
     this.updateStorage();
   }
 
-  filtering(completed: boolean) {
-    return this.todos.filter((todo: Todo) => todo.completed === completed);
+  getItemsLeft(): Todo[] {
+    return this.todos.filter((todo: Todo) => todo.completed === false);
+  }
+
+  getItemsDone(): Todo[] {
+    return this.todos.filter((todo: Todo) => todo.completed === true);
   }
 }
